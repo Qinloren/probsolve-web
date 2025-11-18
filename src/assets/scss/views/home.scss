@@ -1,0 +1,126 @@
+@use "../base";
+@use "sass:color";
+
+.home-container {
+  .card-box {
+    width: 100%;
+    &.first-card {
+      width: 100%;
+      padding: 100px 0;
+      background: linear-gradient(
+          135deg,
+          base.$theme-color 0%,
+          color.adjust(base.$theme-color, $lightness: 8%) 100%
+      );
+      @media (max-width: 1280px) {
+        > div {
+          max-width: 1024px !important;
+          h1 {
+            font-size: 35px !important;
+            line-height: 39px !important;
+          }
+          img {
+            --img-scale-base: 0.8 !important;
+          }
+        }
+      }
+      @media (max-width: 1024px) {
+        > div {
+          max-width: 768px !important;
+          div:first-child {
+            margin: 0 auto;
+          }
+          img {
+            --img-scale-base: 0.8 !important;
+          }
+        }
+      }
+      @media (max-width: 768px) {
+        > div {
+          max-width: 100%;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          img {
+            --img-scale-base: 1 !important;
+            max-width: 380px;
+          }
+        }
+      }
+      color: rgb(255, 255, 255);
+      > div {
+        padding: 0 10px;
+        margin: 0 auto;
+        max-width: 1500px;
+        display: flex;
+        gap: 15px;
+        justify-content: space-between;
+        transition: max-width 0.3s linear;
+        div:first-child {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 15px;
+          h1 {
+            font-size: 50px;
+            line-height: 56px;
+          }
+          > div {
+            display: flex;
+            gap: 10px;
+            button {
+              padding: 8px 16px;
+              border: 2px solid rgb(255, 255, 255);
+              border-radius: 8px;
+              outline: none;
+              background-color: transparent;
+              color: rgb(255, 255, 255);
+              font-size: 16px;
+              line-height: 20px;
+              display: flex;
+              gap: 2px;
+              align-items: center;
+              cursor: pointer;
+              transition: background-color 0.3s linear,
+                          transform 0.3s linear,
+                          color 0.3s linear;
+              i {
+                font-size: 18px;
+                line-height: 22px;
+              }
+              &:first-child {
+                background-color: rgb(255, 255, 255);
+                color: base.$text-color;
+              }
+              &:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                transform: translateY(-2px);
+                &:first-child {
+                  background-color: rgba(255, 255, 255, 0.95);
+                }
+              }
+            }
+          }
+        }
+        div:last-child {
+          img {
+            float: right;
+            margin: auto auto;
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+                        0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            transition: transform 0.3s linear;
+            will-change: transform;
+            transform: scale(var(--img-scale-base, 1));
+            transform-origin: right center;
+            &:hover {
+              transform: scale(#{calc(var(--img-scale-base, 1) * 1.02)});
+            }
+          }
+        }
+      }
+    }
+  }
+}
