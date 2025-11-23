@@ -1,8 +1,9 @@
 import axios from 'axios'
+import { useUserStore } from '@/stores/user.ts'
 
 const instance = axios.create({
   timeout: 100000,
-  baseURL: '/',
+  baseURL: '/api',
   headers: {
     'Content-Type': 'application/json'
   },
@@ -11,6 +12,10 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
+    const userStore = useUserStore();
+    if (userStore.getToken()) {
+      config.headers.Authorization = userStore.getToken();
+    }
     return config
   },
   (error) => {
