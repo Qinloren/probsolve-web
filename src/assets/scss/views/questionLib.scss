@@ -1,0 +1,175 @@
+@use "../base";
+@use "sass:color";
+
+.question-lib-container {
+  margin: 0 10px;
+  .question-lib-container-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    max-width: 1400px;
+    width: 100%;
+    margin: 30px auto;
+    @media (max-width: 1280px) {
+      max-width: 1024px;
+    }
+    @media (max-width: 1024px) {
+      max-width: 768px;
+      .question-lib-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      }
+    }
+    @media (max-width: 768px) {
+      max-width: 100%;
+      .question-lib-list {
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+      }
+    }
+    .question-lib-title {
+      .question-lib-title-text {
+        font-size: 45px;
+        line-height: 50px;
+        font-weight: 700;
+      }
+      .question-lib-title-desc {
+        color: base.$text-color;
+        margin-top: 15px;
+        font-size: 16px;
+        line-height: 20px;
+      }
+    }
+    .question-lib-operations {
+      background: rgb(255, 255, 255);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      .question-lib-operation-group {
+        display: flex;
+        gap: 10px;
+        button {
+          padding: 8px 16px;
+          outline: none;
+          border: none;
+          background: transparent;
+          cursor: pointer;
+          border-radius: 6px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          font-size: 16px;
+          line-height: 19px;
+          transition: all 0.3s linear;
+          i {
+            font-size: 22px;
+            line-height: 26px;
+          }
+          &.question-lib-create-btn {
+            background: base.$theme-color;
+            color: rgb(255, 255, 255);
+            &:hover {
+              background: color.adjust(base.$theme-color, $lightness: 10%);
+            }
+          }
+          &.question-lib-import-btn {
+            border: 1px solid base.$theme-color;
+            color: base.$theme-color;
+            &:hover {
+              background: color.adjust(base.$theme-color, $lightness: 48%);
+            }
+          }
+        }
+      }
+      .question-lib-operations-search {
+        .search-input {
+          padding: 8px 16px;
+        }
+      }
+    }
+    .question-lib-list {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 25px;
+      transition: all 0.3s ease;
+      .question-lib-item {
+        background: rgb(255, 255, 255);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s linear;
+        &:hover {
+          transform: translateY(-5px);
+        }
+        .question-lib-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          .question-lib-header-header-action {
+            cursor: pointer;
+          }
+        }
+        .question-lib-signature {
+          font-size: 15px;
+          color: base.$text-color-warm;
+          margin-top: 20px;
+        }
+        .question-lib-info {
+          margin-top: 20px;
+          display: flex;
+          gap: 15px;
+          color: base.$text-color-warm;
+          .question-lib-info-item {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            justify-content: center;
+          }
+        }
+        .question-lib-footer {
+          display: flex;
+          justify-content: space-between;
+          margin-top: 20px;
+          .question-lib-edit {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: base.$text-color;
+            cursor: pointer;
+            transition: color 0.3s linear;
+            &:hover {
+              color: base.$theme-color;
+            }
+          }
+          .question-lib-start {
+            padding: 4px 8px;
+            font-size: 14px;
+            color: base.$theme-color;
+            background: color.adjust(base.$theme-color-light, $lightness: 45%);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s linear;
+            &:hover {
+              background: color.adjust(base.$theme-color-light, $lightness: 35%);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.question-lib-import {
+  .upload-drag-icon {
+    font-size: 50px;
+    line-height: 54px;
+    color: base.$theme-color-light;
+  }
+  p {
+    color: base.$text-color-warm;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 0;
+  }
+}
