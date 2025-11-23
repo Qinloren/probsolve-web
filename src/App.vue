@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { RouterView } from "vue-router";
-import { ConfigProvider } from "ant-design-vue";
+import zh_CN from "ant-design-vue/es/locale/zh_CN";
 </script>
 
 <template>
-  <config-provider>
+  <a-config-provider :locale="zh_CN">
     <router-view v-slot="{ Component }">
-      <transition name="fade">
+      <transition name="slide" mode="out-in">
         <component :is="Component" />
       </transition>
     </router-view>
-  </config-provider>
+  </a-config-provider>
 </template>
 
-<style>
+<style lang="scss">
+@use '@/assets/scss/base';
 </style>
