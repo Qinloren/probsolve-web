@@ -1,0 +1,49 @@
+@use '../base';
+
+.login-container {
+  padding: 80px 20px;
+  .login-form-card {
+    max-width: 490px;
+    background: rgb(255, 255, 255);
+    margin: auto;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    .login-form-card-title {
+      text-align: center;
+      font-size: 32px;
+      line-height: 48px;
+      font-weight: 600;
+    }
+    .login-form-card-desc {
+      text-align: center;
+      color: base.$text-color;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .login-form-card-form {
+      margin-top: 40px;
+      .login-btn {
+        width: 100%;
+        padding: 8px 0;
+      }
+    }
+    .login-form-card-register {
+      text-align: center;
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
