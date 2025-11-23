@@ -56,4 +56,19 @@ export interface UserType {
    * 最后登录时间
    */
   lastLoginTime: number;
+
+  /**
+   * 考试次数
+   */
+  totalAttempts: number;
+
+  /**
+   * 正确次数
+   */
+  correctRate: number;
+
+  /**
+   * 考试数量
+   */
+  totalExams: number;
 }
