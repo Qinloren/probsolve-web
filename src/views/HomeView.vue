@@ -30,11 +30,38 @@ const data = reactive({
         </div>
       </div>
     </section>
-    <section class="card-box"></section>
-    <section class="card-box"></section>
-    <section class="card-box"></section>
-    <section class="card-box"></section>
-    <section class="card-box"></section>
+    <section class="card-box second-card">
+      <div>
+        <div>
+          <h1>为什么选择我们？</h1>
+          <p>全方位刷题体验，让学习更高效</p>
+        </div>
+        <div>
+          <div class="select-card">
+            <div class="select-card-icon">
+              <i class="i-mdi:database"></i>
+            </div>
+            <h3 class="select-card-title">海量题库</h3>
+            <p class="select-card-desc">覆盖各学科知识点，包含基础题、进阶题和真题，支持用户分享题库</p>
+          </div>
+          <div class="select-card">
+            <div class="select-card-icon">
+              <i class="i-mdi:clock-outline"></i>
+            </div>
+            <h3 class="select-card-title">模拟考试</h3>
+            <p class="select-card-desc">真实还原考试场景，计时答题，自动判分，帮助你适应考试节奏</p>
+          </div>
+          <div class="select-card">
+            <div class="select-card-icon">
+              <i class="i-mdi:chart-bell-curve-cumulative"></i>
+            </div>
+            <h3 class="select-card-title">学习分析</h3>
+            <p class="select-card-desc">记录答题数据，生产学习报告，精准定位薄弱环节，针对性提升</p>
+          </div>
+        </div>
+      </div>
+    </section>
+<!--    <section class="card-box"></section>-->
   </div>
 </template>
 
