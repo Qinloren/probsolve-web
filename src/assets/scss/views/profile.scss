@@ -1,0 +1,268 @@
+@use "../base";
+@use "sass:color";
+
+.profile-container {
+  margin: 0 10px;
+  .profile-container-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 35px;
+    max-width: 1400px;
+    width: 100%;
+    margin: 30px auto;
+    @media (max-width: 1280px) {
+      max-width: 1024px;
+      .profile-content {
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+        column-gap: 0 !important;
+      }
+    }
+    @media (max-width: 1024px) {
+      max-width: 768px;
+      .profile-content {
+        .overview-card {
+          grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+        }
+      }
+    }
+    .profile-title {
+      .profile-title-text {
+        font-size: 45px;
+        line-height: 50px;
+        font-weight: 700;
+      }
+      .profile-title-desc {
+        color: base.$text-color;
+        margin-top: 15px;
+        font-size: 16px;
+        line-height: 20px;
+      }
+    }
+    .profile-content {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      row-gap: 45px;
+      column-gap: 45px;
+      .profile-content-side {
+        grid-column: span 1;
+        height: auto;
+        .profile-content-side-inner {
+          background: rgb(255, 255, 255);
+          height: auto;
+          border-radius: 8px;
+          padding: 20px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          position: sticky;
+          top: 25px;
+          .user-card {
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .user-card-avatar {
+              width: 100px;
+              height: 100px;
+              border-radius: 9999px;
+              overflow: hidden;
+              transition: border-width 0.3s ease;
+              cursor: pointer;
+              &:hover {
+                border: 4px solid color.adjust(base.$theme-color-light, $lightness: 35%);
+              }
+              img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+              }
+            }
+            .user-card-info {
+              margin: 10px 0;
+              text-align: center;
+              .user-card-info-desc {
+                color: base.$text-color;
+              }
+            }
+            .user-card-level {
+              width: 100%;
+              .user-card-level-text {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+              }
+            }
+          }
+          .user-profile-menu {
+            list-style-type: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            .user-profile-menu-item {
+              padding: 8px 16px;
+              transition: background 0.3s linear,
+                          color 0.3s linear;
+              border-radius: 8px;
+              &:hover {
+                color: base.$theme-color-light;
+                background: color.adjust(base.$theme-color-light, $lightness: 38%);
+                .user-profile-menu-link {
+                  color: inherit;
+                }
+              }
+              .user-profile-menu-link {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                text-decoration: none;
+                color: base.$text-color-dark;
+              }
+            }
+          }
+        }
+      }
+      .profile-content-main {
+        grid-column: span 3;
+        .profile-content-main-item {
+          &:not(:first-child) {
+            margin-top: 20px;
+            background: rgb(255, 255, 255);
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s linear;
+            &:hover {
+              transform: translateY(-5px);
+              box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            }
+          }
+          &.overview-card {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 15px;
+            .overview-card-item {
+              background: rgb(255, 255, 255);
+              border-radius: 8px;
+              border-left-width: 4px;
+              border-left-style: solid;
+              padding: 10px;
+              transition: all 0.3s linear;
+              &:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+              }
+              &.total-attempts-card {
+                border-left-color: base.$theme-color;
+                .overview-card-item-inner {
+                  .overview-card-item-icon {
+                    background: color.adjust(base.$theme-color, $lightness: 35%);
+                    color: base.$theme-color;
+                  }
+                }
+              }
+              &.total-exams-card {
+                border-left-color: base.$theme-color-light;
+                .overview-card-item-inner {
+                  .overview-card-item-icon {
+                    background: color.adjust(base.$theme-color-light, $lightness: 35%);
+                    color: base.$theme-color-light;
+                  }
+                }
+              }
+              &.correct-rate-card {
+                border-left-color: #397517;
+                .overview-card-item-inner {
+                  .overview-card-item-icon {
+                    background: color.adjust(#397517, $lightness: 60%);
+                    color: #4da11d;
+                  }
+                }
+              }
+              .overview-card-item-inner {
+                padding: 10px;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                .overview-card-item-text-title {
+                  font-size: 14px;
+                  line-height: 18px;
+                  color: base.$text-color-warm;
+                }
+                .overview-card-item-text-size {
+                  font-size: 25px;
+                }
+                .overview-card-item-icon {
+                  width: 48px;
+                  height: 48px;
+                  border-radius: 4px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  i {
+                    font-size: 20px;
+                    line-height: 24px;
+                  }
+                }
+              }
+            }
+          }
+          &.tendency-card {
+            .tendency-card-header {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 15px;
+              .tendency-card-views-types {
+                display: flex;
+                gap: 5px;
+                button {
+                  padding: 4px 10px;
+                  outline: none;
+                  background: transparent;
+                  border: none;
+                  cursor: pointer;
+                  transition: all 0.3s linear;
+                  border-radius: 4px;
+                  &:hover {
+                    background: base.$card-color;
+                  }
+                  &.active {
+                    background: color.adjust(base.$theme-color, $lightness: 35%);
+                    color: base.$theme-color;
+                  }
+                }
+              }
+            }
+          }
+          &.record-card {
+            .record-card-header {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 15px;
+              .record-card-view-all {
+                text-decoration: none;
+                color: base.$theme-color;
+                cursor: pointer;
+                position: relative;
+                &:after {
+                  content: "";
+                  position: absolute;
+                  width: 100%;
+                  height: 2px;
+                  background: base.$theme-color;
+                  left: 0;
+                  bottom: 0;
+                  transform: scaleX(0);
+                  transform-origin: 100% 0;
+                  transition: transform 0.3s linear;
+                }
+                &:hover {
+                  &:after {
+                    transform: scaleX(1);
+                    transform-origin: 0 0;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
