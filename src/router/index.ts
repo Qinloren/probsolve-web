@@ -44,6 +44,20 @@ const router = createRouter({
           component: () => import("@/views/QuestionLibView.vue"),
         }
       ]
+    },
+    {
+      path: "/study",
+      component: () => import("@/layout/DefaultLayout.vue"),
+      children: [
+        {
+          path: "practise",
+          name: "practise",
+          meta: {
+            requiresAuth: true
+          },
+          component: () => import("@/views/PractiseView.vue")
+        }
+      ]
     }
   ],
 });

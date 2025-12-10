@@ -7,10 +7,11 @@ import {
   importQuestionLib,
   searchQuestionLibs
 } from '@/api/questionLib.ts'
-import type { QuestionLibType } from '@/types/questions.ts'
+import type { QuestionLibType } from '@/types/questions.type.ts'
 import { formatTime } from '@/util/format.ts'
 import { useUserStore } from '@/stores/user.ts'
 import { message, type UploadProps } from 'ant-design-vue'
+import router from "@/router";
 
 const data = reactive({
   searchValue: '',
@@ -70,6 +71,25 @@ const onClickImportQuestionLib = async () => {
     }
   }
 }
+
+const startPractise = (id: number) => {
+  router.push({
+    name: 'practise',
+    query: {
+      id
+    }
+  })
+}
+
+const downloadExampleQuestionLibFile = () => {
+  const a = document.createElement("a");
+  a.href="/example/libs/default.pb";
+  a.download = "example.pb";
+  a.style.display = "none"
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
 </script>
 
 <template>
@@ -88,6 +108,10 @@ const onClickImportQuestionLib = async () => {
           <button class="question-lib-import-btn" @click="showImportModel">
             <i class="i-mdi:tray-upload"></i>
             导入题库
+          </button>
+          <button class="question-lib-import-btn" @click="downloadExampleQuestionLibFile">
+            <i class="i-mdi:download"></i>
+            下载示例题库
           </button>
           <a-modal class="question-lib-import" v-model:open="data.isShowImportModel" title="导入题库" @ok="onClickImportQuestionLib">
             <a-upload-dragger v-model:fileList="data.uploadFiles" name="importFile" accept=".pb" :multiple="false" :beforeUpload="beforeUpload">
@@ -142,7 +166,7 @@ const onClickImportQuestionLib = async () => {
           <div class="question-lib-info">
             <div class="question-lib-info-item">
               <i class="i-mdi:question-mark-circle"></i>
-              <span>{{ item.questions.length }}题</span>
+              <span>{{ item.size }}题</span>
             </div>
             <div class="question-lib-info-item">
               <i class="i-mdi:date-range"></i>
@@ -158,7 +182,7 @@ const onClickImportQuestionLib = async () => {
               <i class="i-mdi:circle-edit-outline"></i>
               <span>编辑题目</span>
             </div>
-            <div class="question-lib-start">开始练习</div>
+            <div class="question-lib-start" @click="startPractise(item.id)">开始练习</div>
           </div>
         </div>
       </div>

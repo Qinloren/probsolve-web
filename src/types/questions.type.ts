@@ -5,12 +5,12 @@ export interface QuestionType {
   /**
    * 题目id
    */
-  id: string;
+  id: number;
 
   /**
    * 用户id
    */
-  userId: string;
+  userId: number;
 
   /**
    * 题目内容
@@ -25,12 +25,12 @@ export interface QuestionType {
   /**
    * 难度
    */
-  difficulty: string;
+  difficulty: number;
 
   /**
    * 分数
    */
-  score: string;
+  score: number;
 
   /**
    * 来源
@@ -40,22 +40,41 @@ export interface QuestionType {
   /**
    * 状态
    */
-  status: string;
+  status: number;
 
   /**
    * 类型
    */
-  type: string;
+  type: number;
 
   /**
    * 创建时间
    */
-  createTime: string;
+  createTime: number;
 
   /**
    * 修改时间
    */
-  updateTime: string;
+  updateTime: number;
+
+  /**
+   * 选项
+   */
+  options: QuestionOptionType[];
+}
+
+/**
+ * 题目选项类型
+ */
+export interface QuestionOptionType {
+  /**
+   * 选项索引
+   */
+  index: number;
+  /**
+   * 选项
+   */
+  value: string;
 }
 
 /**
@@ -97,6 +116,11 @@ export interface QuestionLibType {
    * 状态
    */
   status: number;
+
+  /**
+   * 题目数量
+   */
+  size: number;
 
   /**
    * 题目

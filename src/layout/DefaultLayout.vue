@@ -137,7 +137,7 @@ const onLogout = () => {
                 <router-link to="/">题库</router-link>
               </li>
               <li class="menu-item">
-                <router-link to="/">练习</router-link>
+                <router-link to="/study/practise">练习</router-link>
               </li>
               <li class="menu-item">
                 <router-link to="/">模拟考试</router-link>
@@ -201,11 +201,13 @@ const onLogout = () => {
       </div>
     </header>
     <main class="main-container">
-      <router-view v-slot="{ Component }">
-        <transition name="slide" mode="out-in">
-          <component :is="Component" />
-        </transition>
-      </router-view>
+      <div class="main-container-inner">
+        <router-view v-slot="{ Component }">
+          <transition name="slide" mode="out-in">
+              <component :is="Component" />
+          </transition>
+        </router-view>
+      </div>
     </main>
   </div>
 </template>

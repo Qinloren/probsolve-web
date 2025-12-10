@@ -1,6 +1,18 @@
 import http from '@/util/http.ts'
 import type { UploadFile } from 'ant-design-vue'
 
+/**
+ * 获取所有题库，
+ */
+export const getQuestionLibs = (size: number = 10) => {
+  return http.get("/sys/question/category/search", {
+    params: {
+      page: 1,
+      pageSize: size
+    }
+  })
+}
+
 export const searchQuestionLibs = (name: string) => {
   return http.get("/sys/question/category/search", {
     params: {
@@ -50,5 +62,41 @@ export const importQuestionLib = (file: UploadFile, type: string) => {
     headers: {
       'Content-Type': 'multipart/form-data'
     }
+  })
+}
+
+/**
+ * 获取题库题目
+ * @param categoryId 题库ID
+ * @param difficulty 难度
+ * @param type 题目类型
+ * @param size 数量
+ */
+export const filterQuestions = (
+  categoryId: number,
+  difficulty?: number | null,
+  type?: number | null,
+  size?: number | null,
+) => {
+  return http.get('/sys/question/category/relation/searchByQuestion', {
+    params: {
+      categoryId,
+      difficulty: difficulty ?? null,
+      type: type ?? null,
+      size: size ?? null,
+    }
+  })
+}
+
+
+/**
+ * 验证题目
+ * @param questionId 题目ID
+ * @param answer 答案
+ */
+export const validateQuestion = (questionId: number, answer: number | string | string[] | Array<number>) => {
+  return http.post("/sys/question/validate", {
+    questionId,
+    answer
   })
 }
