@@ -1,0 +1,52 @@
+@use "../../base";
+@use "sass:color";
+
+.question-container {
+  margin-top: 20px;
+
+  .question-header {
+    font-weight: 550;
+    color: base.$text-color-dark;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    strong {
+      margin-right: 5px;
+  }
+}
+
+  .question-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
+    margin-top: 20px;
+
+    a-button {
+      min-width: 80px;
+  }
+}
+
+  .question-analysis {
+    margin-top: 25px;
+    background: base.$card-color;
+    border-radius: 6px;
+    border: 1px solid base.$border-color;
+    padding: 20px;
+
+    h4 {
+      font-weight: 600;
+      font-size: 16px;
+      line-height: 20px;
+      margin-bottom: 12px;
+  }
+
+    .question-result-analysis-content {
+      color: base.$text-color;
+      font-size: 14px;
+      line-height: 18px;
+  }
+}
+}

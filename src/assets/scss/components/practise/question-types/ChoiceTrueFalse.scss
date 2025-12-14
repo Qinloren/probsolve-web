@@ -1,0 +1,29 @@
+@use "../../../base";
+@use "sass:color";
+
+.question-single-choice,
+.question-multiple-choice,
+.question-trueOrFalse {
+  .question-content {
+    display: flex;
+    .question-options {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin: 20px 0;
+      .question-options-item {
+        display: flex;
+        border: 1px solid base.$border-color;
+        width: 100%;
+        padding: 8px 16px;
+        cursor: pointer;
+        border-radius: 4px;
+        transition: all 0.3s linear;
+        &:hover {
+          border-color: color.adjust(base.$border-color, $lightness: -15px);
+        }
+      }
+    }
+  }
+}

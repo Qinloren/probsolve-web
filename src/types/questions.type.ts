@@ -1,3 +1,5 @@
+export type AnswerType = number | number[] | string | string[];
+
 /**
  * 题目类型
  */

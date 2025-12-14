@@ -12,13 +12,25 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    FillBlank: typeof import('./src/components/practise/question-types/FillBlank.vue')['default']
+    MultipleChoice: typeof import('./src/components/practise/question-types/MultipleChoice.vue')['default']
+    QuestionRenderer: typeof import('./src/components/practise/QuestionRenderer.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ShortAnswer: typeof import('./src/components/practise/question-types/ShortAnswer.vue')['default']
+    SingleChoice: typeof import('./src/components/practise/question-types/SingleChoice.vue')['default']
+    TrueFalse: typeof import('./src/components/practise/question-types/TrueFalse.vue')['default']
   }
 }
 
 // For TSX support
 declare global {
+  const FillBlank: typeof import('./src/components/practise/question-types/FillBlank.vue')['default']
+  const MultipleChoice: typeof import('./src/components/practise/question-types/MultipleChoice.vue')['default']
+  const QuestionRenderer: typeof import('./src/components/practise/QuestionRenderer.vue')['default']
   const RouterLink: typeof import('vue-router')['RouterLink']
   const RouterView: typeof import('vue-router')['RouterView']
+  const ShortAnswer: typeof import('./src/components/practise/question-types/ShortAnswer.vue')['default']
+  const SingleChoice: typeof import('./src/components/practise/question-types/SingleChoice.vue')['default']
+  const TrueFalse: typeof import('./src/components/practise/question-types/TrueFalse.vue')['default']
 }

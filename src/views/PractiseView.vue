@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { computed, h, onMounted, reactive, ref, type VNode } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { filterQuestions, getQuestionLibs, validateQuestion } from "@/api/questionLib.ts";
 import { message, type SelectProps } from "ant-design-vue";
-import type { QuestionLibType, QuestionType } from "@/types/questions.type.ts";
-import { Input } from "ant-design-vue";
+import type { AnswerType, QuestionLibType, QuestionType } from "@/types/questions.type.ts";
 import router from "@/router";
+import QuestionRenderer from "@/components/practise/QuestionRenderer.vue";
 
 const data = reactive({
   selectedQuestionId: ref<number | null>(null),
@@ -16,9 +16,7 @@ const data = reactive({
   selectedQuestionName: "测试题库",
   answeredQuestions: [] as QuestionType[],
   isShowNextQuestionBtn: false,
-  isEnableNextQuestionBtn: true,
   isShowAnalysis: false,
-  isShowCheckAnswer: false,
   answeringQuestion: {
     singleAnswer: null,
     multipleAnswer: [],
@@ -26,6 +24,7 @@ const data = reactive({
     trueOrFalseAnswer: -1,
     shortAnswer: null,
   },
+  currentIndex: 0
 });
 
 const loading = ref(true);
@@ -87,35 +86,6 @@ const getFirstQuestion = computed(() => {
   return data.questions.length > 0 ? data.questions[0] : null;
 });
 
-const renderFillQuestionTitle = () => {
-  let originTitle = "";
-  if (getFirstQuestion.value) {
-    originTitle = getFirstQuestion.value.content;
-  }
-  const segments = originTitle.split("{}");
-  const inputCount = segments.length - 1;
-  if (data.answeringQuestion.fillAnswer.length !== inputCount) {
-    data.answeringQuestion.fillAnswer = Array(inputCount).fill("");
-  }
-  const children: (string | VNode)[] = [];
-  segments.forEach((seg, idx) => {
-    children.push(seg);
-    if (idx < segments.length - 1) {
-      children.push(
-        h(Input, {
-          value: data.answeringQuestion.fillAnswer[idx],
-          "onUpdate:value": (val: string) => {
-            data.answeringQuestion.fillAnswer[idx] = val;
-          },
-          placeholder: "请输入答案",
-          class: "question-fill-input",
-        }),
-      );
-    }
-  });
-  return h("p", children);
-};
-
 const filterOption = (input: string, option: { value: number; label: string }) => {
   return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 };
@@ -155,70 +125,91 @@ const startPractiseQuestionById = async (id: number) => {
     data.questionLibs?.find((item) => item.value === data.selectedQuestionId)?.label ?? null;
 };
 
-const previousQuestion = () => {};
-
-const nextQuestion = () => {
-  if (data.questions.length === 0) {
-    // TODO: 最后一题
-    // data.isEnableNextQuestionBtn = false;
-    message.info("恭喜！所有题目已全部完成！");
+const previousQuestion = () => {
+  if (data.currentIndex <= 0) {
     return;
   }
-  const firstQuestion = getFirstQuestion.value;
-  if (firstQuestion) data.answeredQuestions.unshift(firstQuestion);
-  data.questions.shift();
-};
-
-const submitAnswer = async () => {
-  if (!getFirstQuestion.value) return;
-  let answer;
-  const questionType = getFirstQuestion.value.type;
-  if (questionType === 1) {
-    answer = data.answeringQuestion.singleAnswer;
-    if (answer === null || answer === undefined) {
-      message.warning("请选择一个选项");
-      return;
-    }
-  } else if (questionType === 2) {
-    answer = data.answeringQuestion.multipleAnswer;
-    if (!answer || answer.length === 0) {
-      message.warning("请至少选择一个选项");
-      return;
-    }
-  } else if (questionType === 3) {
-    answer = data.answeringQuestion.trueOrFalseAnswer;
-    if (answer === -1 || answer === null || answer === undefined) {
-      message.warning("请选择一个选项");
-      return;
-    }
-  } else if (questionType === 4) {
-    answer = data.answeringQuestion.fillAnswer;
-    if (!answer || answer.length === 0 || answer.every((item) => !item || item.trim() === "")) {
-      message.warning("请填写完整");
-      return;
-    }
-  } else if (questionType === 5) {
-    answer = data.answeringQuestion.shortAnswer;
-    if (!answer || String(answer).trim() === "") {
-      message.warning("请填写答案");
-      return;
-    }
-  }
-  if (answer === undefined) {
-    return;
-  }
-  const response = await validateQuestion(getFirstQuestion.value.id, answer);
-  if (!response.data.data) {
-    message.error("回答错误！");
-    data.isShowAnalysis = true;
-    data.isShowNextQuestionBtn = true;
-    return;
-  }
-  message.success("回答正确！");
+  data.currentIndex--;
   data.isShowAnalysis = false;
   data.isShowNextQuestionBtn = false;
-  nextQuestion();
+
 };
+
+const nextQuestion = () => {
+  if (data.currentIndex < data.questions.length - 1) {
+    data.currentIndex++;
+    data.isShowAnalysis = false;
+    data.isShowNextQuestionBtn = false;
+  }
+};
+
+const isFirst = computed(() => data.currentIndex === 0);
+
+const validateAnswer = (
+  question: QuestionType,
+  answer: AnswerType
+): boolean => {
+  switch (question.type) {
+    case 1:
+    case 3:
+      if (answer === null || answer == undefined) {
+        message.warning("请选择一个选项");
+        return false;
+      }
+      return true;
+    case 2:
+      if (!Array.isArray(answer) || answer.length === 0) {
+        message.warning("请至少选择一个选项");
+        return false;
+      }
+      return true;
+    case 4:
+      if (!Array.isArray(answer) ||
+          answer.length === 0 ||
+          answer.some((item) => !item || typeof item !== "number" && item?.trim() === "")) {
+        message.warning("请填写完整");
+        return false;
+      }
+      return true;
+    case 5:
+      if (!answer || String(answer).trim() === "") {
+        message.warning("请填写答案");
+        return false;
+      }
+      return true;
+    default:
+      message.error("未知题型");
+      return false;
+  }
+}
+
+const handleSubmit = async (
+  answer: AnswerType,
+) => {
+  const question = currentQuestion.value;
+  if (!question) return;
+
+  if (!(validateAnswer(question, answer))) {
+    return;
+  }
+
+  const response = await validateQuestion(question.id, answer);
+
+  const isCorrect = response.data.data;
+
+  data.isShowAnalysis = true;
+  data.isShowNextQuestionBtn = true;
+
+  if (isCorrect) {
+    message.success("回答正确！");
+  } else {
+    message.error("回答错误！");
+  }
+}
+
+const currentQuestion = computed<QuestionType | undefined>(() => {
+  return data.questions[data.currentIndex]
+})
 </script>
 
 <template>
@@ -389,192 +380,17 @@ const submitAnswer = async () => {
         </div>
         <div class="practise-main-question">
           <template v-if="getFirstQuestion !== null">
-            <div class="question-item question-single-choice" v-if="getFirstQuestion && getFirstQuestion.type === 1">
-              cz
-              <!--            单选题-->
-              <div class="question-header">
-                      <h3>第{{ data.answeredQuestions.length + 1 }}题（单选题）</h3>
-                <p>
-                  <span>难度：</span>
-                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1">简</a-tag>
-                  <a-tag color="orange" v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2">中</a-tag>
-                  <a-tag color="red" v-else>难</a-tag>
-                </p>
-              </div>
-              <p class="question-title" v-html="getFirstQuestion.content"></p>
-              <div class="question-content">
-                <a-radio-group class="question-options" v-model:value="data.answeringQuestion.singleAnswer">
-                  <a-radio
-                    class="question-options-item"
-                    v-for="(item, index) in getFirstQuestion.options"
-                    :key="index"
-                    :value="item.index"
-                  >{{ item.value }}</a-radio
-                  >
-                </a-radio-group>
-              </div>
-              <div class="question-action">
-                <a-button @click="previousQuestion">上一题</a-button>
-                <div>
-                  <a-button type="primary" @click="nextQuestion" v-if="data.isShowNextQuestionBtn"
-                  >下一题</a-button
-                  >
-                  <a-button :type="data.isShowNextQuestionBtn ? 'default' : 'primary'" @click="submitAnswer">
-                    {{ data.isShowNextQuestionBtn ? "重新提交" : "提交答案" }}
-                  </a-button>
-                </div>
-              </div>
-            </div>
-            <div class="question-item question-multiple-choice" v-if="getFirstQuestion && getFirstQuestion.type === 2">
-              <!--            多选题-->
-              <div class="question-header">
-                <h3>第{{ data.answeredQuestions.length + 1 }}题（多选题）</h3>
-                <p>
-                  <span>难度：</span>
-                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1">简</a-tag>
-                  <a-tag color="orange" v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2">中</a-tag>
-                  <a-tag color="red" v-else>难</a-tag>
-                </p>
-              </div>
-              <p class="question-title" v-html="getFirstQuestion.content"></p>
-              <div class="question-content">
-                <a-checkbox-group
-                  class="question-options"
-                  v-model:value="data.answeringQuestion.multipleAnswer"
-                >
-                  <a-checkbox
-                    class="question-options-item"
-                    v-for="(item, index) in getFirstQuestion.options"
-                    :key="index"
-                    :value="item.index"
-                  >
-                    {{ item.value }}
-                  </a-checkbox>
-                </a-checkbox-group>
-              </div>
-              <div class="question-action">
-                <a-button @click="previousQuestion">上一题</a-button>
-                <div>
-                  <a-button type="primary" @click="nextQuestion" v-if="data.isShowNextQuestionBtn"
-                  >下一题</a-button
-                  >
-                  <a-button :type="data.isShowNextQuestionBtn ? 'default' : 'primary'" @click="submitAnswer">
-                    {{ data.isShowNextQuestionBtn ? "重新提交" : "提交答案" }}
-                  </a-button>
-                </div>
-              </div>
-            </div>
-            <div class="question-item question-trueOrFalse" v-if="getFirstQuestion && getFirstQuestion.type === 3">
-              <!--            判断题-->
-              <div class="question-header">
-                <h3>第{{ data.answeredQuestions.length + 1 }}题（判断题）</h3>
-                <p>
-                  <span>难度：</span>
-                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1">简</a-tag>
-                  <a-tag color="orange" v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2">中</a-tag>
-                  <a-tag color="red" v-else>难</a-tag>
-                </p>
-              </div>
-              <p class="question-title">{{ getFirstQuestion.content }}</p>
-              <div class="question-content">
-                <a-radio-group
-                  class="question-options"
-                  v-model:value="data.answeringQuestion.trueOrFalseAnswer"
-                >
-                  <a-radio class="question-options-item" :value="1">正确</a-radio>
-                  <a-radio class="question-options-item" :value="0">错误</a-radio>
-                </a-radio-group>
-              </div>
-              <div class="question-result" v-if="data.isShowAnalysis">
-                <h3 class="question-result-title">
-        <span class="question-result-title-success" v-if="data.isShowCheckAnswer">
-          <i class="i-mdi:checkbox-marked-circle"></i>
-          回答正确
-        </span>
-                  <span class="question-result-title-error" v-else>
-          <i class="i-mdi:close-circle"></i>
-          回答错误
-        </span>
-                </h3>
-                <div class="question-result-analysis">
-                  <p class="question-result-analysis-title">
-                    <i class="i-mdi:book-open-variant"></i>
-                    答案解析
-                  </p>
-                  <div class="question-result-analysis-content" v-html="getFirstQuestion.analysis"></div>
-                </div>
-              </div>
-              <div class="question-action">
-                <a-button @click="previousQuestion">上一题</a-button>
-                <div>
-                  <a-button type="primary" @click="nextQuestion" v-if="data.isShowNextQuestionBtn"
-                  >下一题</a-button
-                  >
-                  <a-button :type="data.isShowNextQuestionBtn ? 'default' : 'primary'" @click="submitAnswer">
-                    {{ data.isShowNextQuestionBtn ? "重新提交" : "提交答案" }}
-                  </a-button>
-                </div>
-              </div>
-            </div>
-            <div class="question-item question-fill" v-if="getFirstQuestion && getFirstQuestion.type === 4">
-              <!--            填空题-->
-              <div class="question-header">
-                <h3>第{{ data.answeredQuestions.length + 1 }}题（填空题）</h3>
-                <p>
-                  <span>难度：</span>
-                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1">简</a-tag>
-                  <a-tag color="orange" v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2">中</a-tag>
-                  <a-tag color="red" v-else>难</a-tag>
-                </p>
-              </div>
-              <p class="question-title">
-                <render-fill-question-title />
-              </p>
-              <div class="question-content"></div>
-              <div class="question-action">
-                <a-button @click="previousQuestion">上一题</a-button>
-                <div>
-                  <a-button type="primary" @click="nextQuestion" v-if="data.isShowNextQuestionBtn"
-                  >下一题</a-button
-                  >
-                  <a-button :type="data.isShowNextQuestionBtn ? 'default' : 'primary'" @click="submitAnswer">
-                    {{ data.isShowNextQuestionBtn ? "重新提交" : "提交答案" }}
-                  </a-button>
-                </div>
-              </div>
-            </div>
-            <div class="question-item question-short-answer" v-if="getFirstQuestion && getFirstQuestion.type === 5">
-              <!--            简答题-->
-              <div class="question-header">
-                <h3>第{{ data.answeredQuestions.length + 1 }}题（简答题）</h3>
-                <p>
-                  <span>难度：</span>
-                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1">简</a-tag>
-                  <a-tag color="orange" v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2">中</a-tag>
-                  <a-tag color="red" v-else>难</a-tag>
-                </p>
-              </div>
-              <p class="question-title" v-html="getFirstQuestion.content"></p>
-              <div class="question-content">
-                <p class="question-answer-guide-title">请输入你的答案：</p>
-                <a-textarea
-                  v-model:value="data.answeringQuestion.shortAnswer"
-                  placeholder="请输入解答答案"
-                  :rows="6"
-                />
-              </div>
-              <div class="question-action">
-                <a-button @click="previousQuestion">上一题</a-button>
-                <div>
-                  <a-button type="primary" @click="nextQuestion" v-if="data.isShowNextQuestionBtn"
-                  >下一题</a-button
-                  >
-                  <a-button :type="data.isShowNextQuestionBtn ? 'default' : 'primary'" @click="submitAnswer">
-                    {{ data.isShowNextQuestionBtn ? "重新提交" : "提交答案" }}
-                  </a-button>
-                </div>
-              </div>
-            </div>
+            <QuestionRenderer
+              :current-index="data.currentIndex"
+              v-if="currentQuestion"
+              :question="currentQuestion"
+              :is-first="isFirst"
+              :show-next="data.isShowNextQuestionBtn"
+              :show-analysis="data.isShowAnalysis"
+              @submit="handleSubmit"
+              @next="nextQuestion"
+              @prev="previousQuestion"
+            />
           </template>
           <template v-else>
             <a-empty />

@@ -84,6 +84,7 @@
         grid-column: span 3;
         display: flex;
         flex-direction: column;
+        gap: 25px;
         .practise-main-header,
         .practise-main-question
         {
@@ -101,126 +102,6 @@
             display: flex;
             flex-direction: row;
             gap: 15px;
-          }
-        }
-        .practise-main-question {
-          margin-top: 25px;
-          flex: 1;
-          .question-item {
-            &.question-single-choice,
-            &.question-multiple-choice,
-            &.question-trueOrFalse,
-            &.question-fill,
-            &.question-short-answer {
-              .question-header {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                line-height: 30px;
-                font-weight: 700;
-              }
-              .question-title {
-                font-weight: 550;
-                color: base.$text-color-dark;
-              }
-              .question-content {
-                margin-bottom: 15px;
-              }
-              .question-result {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-start;
-                margin-bottom: 25px;
-                .question-result-title {
-                  > span {
-                    display: flex;
-                    align-items: center;
-                    gap: 6px;
-                    &.question-result-title-success {
-                      color: base.$success-color;
-                    }
-                    &.question-result-title-error {
-                      color: base.$error-color;
-                    }
-                  }
-                }
-                .question-result-analysis {
-                  width: 100%;
-                  background: base.$card-color;
-                  border-radius: 6px;
-                  border: 1px solid base.$border-color;
-                  padding: 20px;
-                  .question-result-analysis-title {
-                    font-weight: 600;
-                    font-size: 16px;
-                    line-height: 20px;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                  }
-                  .question-result-analysis-content {
-                    color: base.$text-color;
-                    font-size: 14px;
-                    line-height: 18px;
-                  }
-                }
-              }
-              .question-action {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                > div {
-                  display: flex;
-                  gap: 15px;
-                }
-              }
-            }
-            &.question-single-choice,
-            &.question-multiple-choice,
-            &.question-trueOrFalse {
-              .question-content {
-                display: flex;
-                .question-options {
-                  width: 100%;
-                  display: flex;
-                  flex-direction: column;
-                  gap: 15px;
-                  margin: 20px 0;
-                  .question-options-item {
-                    display: flex;
-                    border: 1px solid base.$border-color;
-                    width: 100%;
-                    padding: 8px 16px;
-                    cursor: pointer;
-                    border-radius: 4px;
-                    transition: all 0.3s linear;
-                    &:hover {
-                      border-color: color.adjust(base.$border-color, $lightness: -15px);
-                    }
-                  }
-                }
-              }
-            }
-            &.question-fill {
-              .question-fill-input {
-                display: inline-block;
-                width: 120px;
-                border-width: 0 !important;
-                border-bottom-width: 1px !important;
-                border-radius: 0;
-                &:focus {
-                  box-shadow: none !important;
-                }
-              }
-            }
-            &.question-short-answer  {
-              .question-answer-guide-title {
-                font-size: 14px;
-                line-height: 16px;
-                margin: 0 0 6px;
-                color: base.$text-color
-              }
-            }
           }
         }
       }

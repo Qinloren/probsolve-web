@@ -1,0 +1,11 @@
+.question-fill-input {
+  display: inline-block;
+  width: 120px;
+  border-width: 0 !important;
+  border-bottom-width: 1px !important;
+  border-radius: 0;
+
+  &:focus {
+    box-shadow: none !important;
+  }
+}

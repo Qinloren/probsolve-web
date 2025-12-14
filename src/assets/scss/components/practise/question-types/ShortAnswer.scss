@@ -1,0 +1,8 @@
+@use "../../../base";
+
+.question-answer-guide-title {
+  font-size: 14px;
+  line-height: 16px;
+  margin: 0 0 6px;
+  color: base.$text-color;
+}
