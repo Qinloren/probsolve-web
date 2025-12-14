@@ -70,7 +70,7 @@ const submitLogin = () => {
       <h1 class="login-form-card-title">账号登录</h1>
       <p class="login-form-card-desc">登录你的账号，开始高效刷题之旅</p>
       <div class="login-form-card-form">
-        <a-form layout="vertical" :model="data.loginForm" ref="loginForm">
+        <a-form layout="vertical" :model="data.loginForm" ref="loginForm" @finish="submitLogin">
           <a-form-item label="用户名或邮箱地址" name="account">
             <a-input placeholder="请输入用户名或邮箱地址" v-model:value="data.loginForm.account">
               <template #prefix>
@@ -96,7 +96,7 @@ const submitLogin = () => {
             </a-row>
           </a-form-item>
           <a-form-item>
-            <a-button type="primary" size="large" class="login-btn" @click="submitLogin">
+            <a-button type="primary" size="large" class="login-btn" html-type="submit">
               登录
             </a-button>
           </a-form-item>

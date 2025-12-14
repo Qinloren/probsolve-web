@@ -6,6 +6,7 @@ import vueJsx from "@vitejs/plugin-vue-jsx";
 import vueDevTools from "vite-plugin-vue-devtools";
 import Components from "unplugin-vue-components/vite"
 import UnoCSS from "unocss/vite";
+import viteCompression from "vite-plugin-compression";
 
 // https://vite.dev/config/
 export default defineConfig(() => {
@@ -24,18 +25,48 @@ export default defineConfig(() => {
           /\.vue\?vue/,
           /\.md$/,
         ],
-      })
+      }),
+      viteCompression({
+        verbose: true,
+        disable: false,
+        deleteOriginFile: false,
+        threshold: 10240,
+        algorithm: 'gzip',
+        ext: '.gz'
+      }),
     ],
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))
       },
     },
+    // css: {
+    //   extract: true,
+    //   sourceMap: false,
+    //   requireModuleExtension: true
+    // },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes("node_modules")) {
+              return 'vendor'
+            }
+          },
+          chunkFileNames: 'assets/js/[name]-[hash].js',
+          entryFileNames: "assets/js/[name]-[hash].js",
+          assetFileNames: 'assets/[ext]/[name]-[hash].[ext]'
+        }
+      }
+    },
     server: {
       host: '0.0.0.0',
+      port: 5173,
+      // https: true,
+      // hotOnly: true,
       proxy: {
         '/api': {
-          target: 'http://localhost:32223',
+          target: 'https://q.serv.zeeyeh.com',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },

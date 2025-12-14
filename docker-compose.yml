@@ -1,0 +1,8 @@
+version: '1.0'
+
+services:
+  frontend:
+    build: .
+    ports:
+      - "32222:80"
+    restart: always

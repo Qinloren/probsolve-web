@@ -389,38 +389,27 @@ const submitAnswer = async () => {
         </div>
         <div class="practise-main-question">
           <template v-if="getFirstQuestion !== null">
-            <div
-              class="question-item question-single-choice"
-              v-if="getFirstQuestion && getFirstQuestion.type === 1"
-            >
+            <div class="question-item question-single-choice" v-if="getFirstQuestion && getFirstQuestion.type === 1">
+              cz
               <!--            单选题-->
               <div class="question-header">
-                <h3>第{{ data.answeredQuestions.length + 1 }}题（单选题）</h3>
+                      <h3>第{{ data.answeredQuestions.length + 1 }}题（单选题）</h3>
                 <p>
                   <span>难度：</span>
-                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1"
-                    >简</a-tag
-                  >
-                  <a-tag
-                    color="orange"
-                    v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2"
-                    >中</a-tag
-                  >
+                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1">简</a-tag>
+                  <a-tag color="orange" v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2">中</a-tag>
                   <a-tag color="red" v-else>难</a-tag>
                 </p>
               </div>
               <p class="question-title" v-html="getFirstQuestion.content"></p>
               <div class="question-content">
-                <a-radio-group
-                  class="question-options"
-                  v-model:value="data.answeringQuestion.singleAnswer"
-                >
+                <a-radio-group class="question-options" v-model:value="data.answeringQuestion.singleAnswer">
                   <a-radio
                     class="question-options-item"
                     v-for="(item, index) in getFirstQuestion.options"
                     :key="index"
                     :value="item.index"
-                    >{{ item.value }}</a-radio
+                  >{{ item.value }}</a-radio
                   >
                 </a-radio-group>
               </div>
@@ -428,34 +417,22 @@ const submitAnswer = async () => {
                 <a-button @click="previousQuestion">上一题</a-button>
                 <div>
                   <a-button type="primary" @click="nextQuestion" v-if="data.isShowNextQuestionBtn"
-                    >下一题</a-button
+                  >下一题</a-button
                   >
-                  <a-button
-                    :type="data.isShowNextQuestionBtn ? 'default' : 'primary'"
-                    @click="submitAnswer"
-                  >
+                  <a-button :type="data.isShowNextQuestionBtn ? 'default' : 'primary'" @click="submitAnswer">
                     {{ data.isShowNextQuestionBtn ? "重新提交" : "提交答案" }}
                   </a-button>
                 </div>
               </div>
             </div>
-            <div
-              class="question-item question-multiple-choice"
-              v-if="getFirstQuestion && getFirstQuestion.type === 2"
-            >
+            <div class="question-item question-multiple-choice" v-if="getFirstQuestion && getFirstQuestion.type === 2">
               <!--            多选题-->
               <div class="question-header">
                 <h3>第{{ data.answeredQuestions.length + 1 }}题（多选题）</h3>
                 <p>
                   <span>难度：</span>
-                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1"
-                    >简</a-tag
-                  >
-                  <a-tag
-                    color="orange"
-                    v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2"
-                    >中</a-tag
-                  >
+                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1">简</a-tag>
+                  <a-tag color="orange" v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2">中</a-tag>
                   <a-tag color="red" v-else>难</a-tag>
                 </p>
               </div>
@@ -479,34 +456,22 @@ const submitAnswer = async () => {
                 <a-button @click="previousQuestion">上一题</a-button>
                 <div>
                   <a-button type="primary" @click="nextQuestion" v-if="data.isShowNextQuestionBtn"
-                    >下一题</a-button
+                  >下一题</a-button
                   >
-                  <a-button
-                    :type="data.isShowNextQuestionBtn ? 'default' : 'primary'"
-                    @click="submitAnswer"
-                  >
+                  <a-button :type="data.isShowNextQuestionBtn ? 'default' : 'primary'" @click="submitAnswer">
                     {{ data.isShowNextQuestionBtn ? "重新提交" : "提交答案" }}
                   </a-button>
                 </div>
               </div>
             </div>
-            <div
-              class="question-item question-trueOrFalse"
-              v-if="getFirstQuestion && getFirstQuestion.type === 3"
-            >
+            <div class="question-item question-trueOrFalse" v-if="getFirstQuestion && getFirstQuestion.type === 3">
               <!--            判断题-->
               <div class="question-header">
                 <h3>第{{ data.answeredQuestions.length + 1 }}题（判断题）</h3>
                 <p>
                   <span>难度：</span>
-                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1"
-                    >简</a-tag
-                  >
-                  <a-tag
-                    color="orange"
-                    v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2"
-                    >中</a-tag
-                  >
+                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1">简</a-tag>
+                  <a-tag color="orange" v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2">中</a-tag>
                   <a-tag color="red" v-else>难</a-tag>
                 </p>
               </div>
@@ -522,58 +487,43 @@ const submitAnswer = async () => {
               </div>
               <div class="question-result" v-if="data.isShowAnalysis">
                 <h3 class="question-result-title">
-                  <span class="question-result-title-success" v-if="data.isShowCheckAnswer">
-                    <i class="i-mdi:checkbox-marked-circle"></i>
-                    回答正确
-                  </span>
+        <span class="question-result-title-success" v-if="data.isShowCheckAnswer">
+          <i class="i-mdi:checkbox-marked-circle"></i>
+          回答正确
+        </span>
                   <span class="question-result-title-error" v-else>
-                    <i class="i-mdi:close-circle"></i>
-                    回答错误
-                  </span>
+          <i class="i-mdi:close-circle"></i>
+          回答错误
+        </span>
                 </h3>
                 <div class="question-result-analysis">
                   <p class="question-result-analysis-title">
                     <i class="i-mdi:book-open-variant"></i>
                     答案解析
                   </p>
-                  <div
-                    class="question-result-analysis-content"
-                    v-html="getFirstQuestion.analysis"
-                  ></div>
+                  <div class="question-result-analysis-content" v-html="getFirstQuestion.analysis"></div>
                 </div>
               </div>
               <div class="question-action">
                 <a-button @click="previousQuestion">上一题</a-button>
                 <div>
                   <a-button type="primary" @click="nextQuestion" v-if="data.isShowNextQuestionBtn"
-                    >下一题</a-button
+                  >下一题</a-button
                   >
-                  <a-button
-                    :type="data.isShowNextQuestionBtn ? 'default' : 'primary'"
-                    @click="submitAnswer"
-                  >
+                  <a-button :type="data.isShowNextQuestionBtn ? 'default' : 'primary'" @click="submitAnswer">
                     {{ data.isShowNextQuestionBtn ? "重新提交" : "提交答案" }}
                   </a-button>
                 </div>
               </div>
             </div>
-            <div
-              class="question-item question-fill"
-              v-if="getFirstQuestion && getFirstQuestion.type === 4"
-            >
+            <div class="question-item question-fill" v-if="getFirstQuestion && getFirstQuestion.type === 4">
               <!--            填空题-->
               <div class="question-header">
                 <h3>第{{ data.answeredQuestions.length + 1 }}题（填空题）</h3>
                 <p>
                   <span>难度：</span>
-                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1"
-                    >简</a-tag
-                  >
-                  <a-tag
-                    color="orange"
-                    v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2"
-                    >中</a-tag
-                  >
+                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1">简</a-tag>
+                  <a-tag color="orange" v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2">中</a-tag>
                   <a-tag color="red" v-else>难</a-tag>
                 </p>
               </div>
@@ -585,34 +535,22 @@ const submitAnswer = async () => {
                 <a-button @click="previousQuestion">上一题</a-button>
                 <div>
                   <a-button type="primary" @click="nextQuestion" v-if="data.isShowNextQuestionBtn"
-                    >下一题</a-button
+                  >下一题</a-button
                   >
-                  <a-button
-                    :type="data.isShowNextQuestionBtn ? 'default' : 'primary'"
-                    @click="submitAnswer"
-                  >
+                  <a-button :type="data.isShowNextQuestionBtn ? 'default' : 'primary'" @click="submitAnswer">
                     {{ data.isShowNextQuestionBtn ? "重新提交" : "提交答案" }}
                   </a-button>
                 </div>
               </div>
             </div>
-            <div
-              class="question-item question-short-answer"
-              v-if="getFirstQuestion && getFirstQuestion.type === 5"
-            >
+            <div class="question-item question-short-answer" v-if="getFirstQuestion && getFirstQuestion.type === 5">
               <!--            简答题-->
               <div class="question-header">
                 <h3>第{{ data.answeredQuestions.length + 1 }}题（简答题）</h3>
                 <p>
                   <span>难度：</span>
-                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1"
-                    >简</a-tag
-                  >
-                  <a-tag
-                    color="orange"
-                    v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2"
-                    >中</a-tag
-                  >
+                  <a-tag color="green" v-if="getFirstQuestion && getFirstQuestion.difficulty === 1">简</a-tag>
+                  <a-tag color="orange" v-else-if="getFirstQuestion && getFirstQuestion.difficulty === 2">中</a-tag>
                   <a-tag color="red" v-else>难</a-tag>
                 </p>
               </div>
@@ -629,12 +567,9 @@ const submitAnswer = async () => {
                 <a-button @click="previousQuestion">上一题</a-button>
                 <div>
                   <a-button type="primary" @click="nextQuestion" v-if="data.isShowNextQuestionBtn"
-                    >下一题</a-button
+                  >下一题</a-button
                   >
-                  <a-button
-                    :type="data.isShowNextQuestionBtn ? 'default' : 'primary'"
-                    @click="submitAnswer"
-                  >
+                  <a-button :type="data.isShowNextQuestionBtn ? 'default' : 'primary'" @click="submitAnswer">
                     {{ data.isShowNextQuestionBtn ? "重新提交" : "提交答案" }}
                   </a-button>
                 </div>
