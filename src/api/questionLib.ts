@@ -100,3 +100,23 @@ export const validateQuestion = (questionId: number, answer: number | string | s
     answer
   })
 }
+
+/**
+ * 获取题库导入状态
+ * @param taskId 任务ID
+ */
+export const questionLibStatus = (taskId: string) => {
+  return http.get(`/sys/attachment/upload/question/import/status/${taskId}`)
+}
+
+/**
+ * 获取题库导出状态
+ * @param ids 题库ID
+ */
+export const questionLibStatusList = (ids: Array<string>) => {
+  return http.get('/sys/attachment/upload/question/import/status', {
+    params: {
+      ids: ids
+    }
+  })
+}

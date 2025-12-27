@@ -66,7 +66,8 @@ export default defineConfig(() => {
       // hotOnly: true,
       proxy: {
         '/api': {
-          target: 'https://q.serv.zeeyeh.com',
+          // target: 'https://q.serv.zeeyeh.com',
+          target: 'http://localhost:32223',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },

@@ -1,95 +1,169 @@
 <script setup lang="ts">
-
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive } from "vue";
 import {
   deriveQuestionLib,
   getUserQuestionLibs,
   importQuestionLib,
-  searchQuestionLibs
-} from '@/api/questionLib.ts'
-import type { QuestionLibType } from '@/types/questions.type.ts'
-import { formatTime } from '@/util/format.ts'
-import { useUserStore } from '@/stores/user.ts'
-import { message, type UploadProps } from 'ant-design-vue'
+  questionLibStatusList,
+  searchQuestionLibs,
+} from "@/api/questionLib.ts";
+import type { QuestionLibType } from "@/types/questions.type.ts";
+import { formatTime } from "@/util/format.ts";
+import { useUserStore } from "@/stores/user.ts";
+import { message, type UploadProps } from "ant-design-vue";
 import router from "@/router";
 
 const data = reactive({
-  searchValue: '',
+  searchValue: "",
   isShowImportModel: false,
-  uploadFiles: [] as UploadProps['fileList'],
+  uploadFiles: [] as UploadProps["fileList"],
   questions: [] as QuestionLibType[],
-})
+});
 
 const submitSearch = async () => {
-  const response = await searchQuestionLibs(data.searchValue)
-  data.questions = response.data.data.content
-}
+  const response = await searchQuestionLibs(data.searchValue);
+  data.questions = response.data.data.content;
+};
 
-const userStore = useUserStore()
+const userStore = useUserStore();
 onMounted(async () => {
-  const userId = userStore.getInfo()?.id
+  await initQuestions();
+});
+
+const initQuestions = async () => {
+  const userId = userStore.getInfo()?.id;
   if (userId) {
-    const response = await getUserQuestionLibs(userId)
-    data.questions = response.data.data.content
+    const response = await getUserQuestionLibs(userId);
+    data.questions = response.data.data.content;
+    await processTaskStatus();
   }
-})
+};
+
+const processTaskStatus = async () => {
+  const arr = [] as Array<string>;
+  for (let i = 0; i < data.questions.length; i++) {
+    arr.push(data.questions[i].taskId);
+  }
+  const response = await questionLibStatusList(arr);
+  const statusArr = response.data.data;
+// 遍历所有题库，为每个题库设置对应的状态
+  for (let i = 0; i < data.questions.length; i++) {
+    const question = data.questions[i];
+    // 在 statusArr 中查找与当前题库 taskId 匹配的状态信息
+    const statusInfo = statusArr.find((statusItem: { status: number; taskId: string }) =>
+      statusItem.taskId === question.taskId
+    );
+
+    // 如果找到了匹配的状态信息，则更新 taskStatus
+    if (statusInfo) {
+      question.taskStatus = statusInfo.status;
+    } else {
+      // 如果没有找到对应的状态信息，设置为默认值 -1（未知状态）
+      question.taskStatus = -1;
+    }
+  }
+};
 
 const onClickDeriveQuestionLib = (id: number) => {
-  deriveQuestionLib(id)
-    .then((response) => {
-      if (!response) return
-      const link = document.createElement('a')
-      link.href = window.URL.createObjectURL(new Blob([response.data]))
-      link.target = "_blank";
-      link.download = decodeURI(response.headers['content-disposition'].replace("attachment:filename=", ""))
-      document.body.appendChild(link)
-      link.click()
-      document.body.removeChild(link);
-    })
-}
+  deriveQuestionLib(id).then((response) => {
+    if (!response) return;
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(new Blob([response.data]));
+    link.target = "_blank";
+    link.download = decodeURI(
+      response.headers["content-disposition"].replace("attachment:filename=", ""),
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  });
+};
 
 const showImportModel = () => {
   data.isShowImportModel = true;
-}
+};
 
-const beforeUpload: UploadProps['beforeUpload'] = (file) => {
-  data.uploadFiles = [...(data.uploadFiles || []), file]
-  return false
-}
+const beforeUpload: UploadProps["beforeUpload"] = (file) => {
+  data.uploadFiles = [...(data.uploadFiles || []), file];
+  return false;
+};
 
 const onClickImportQuestionLib = async () => {
   if (data.uploadFiles) {
-    const uploadFile = data.uploadFiles[0]
+    const uploadFile = data.uploadFiles[0];
     if (uploadFile && uploadFile.originFileObj) {
       const response = await importQuestionLib(uploadFile.originFileObj, "pb");
       if (response.status !== 200) {
-        message.error('系统异常，请联系管理员！')
+        message.error("系统异常，请联系管理员！");
+        return;
       }
       if (response.data.code !== 0) {
-        message.error(response.data.message)
+        message.error(response.data.message);
+        return;
       }
+      message.success("任务提交成功！");
+      await initQuestions();
     }
   }
-}
+};
 
 const startPractise = (id: number) => {
   router.push({
-    name: 'practise',
+    name: "practise",
     query: {
-      id
-    }
-  })
-}
+      id,
+    },
+  });
+};
 
 const downloadExampleQuestionLibFile = () => {
   const a = document.createElement("a");
-  a.href="/example/libs/default.pb";
+  a.href = "/example/libs/default.pb";
   a.download = "example.pb";
-  a.style.display = "none"
+  a.style.display = "none";
   document.body.appendChild(a);
   a.click();
   a.remove();
-}
+};
+
+// const getQuestionCategoryImportStatus = async (taskId: string) => {
+//   const response = await questionLibStatus(taskId);
+//   if (response.data.code !== 0) {
+//     return -1;
+//   }
+//   return response.data.data;
+// };
+
+const getStatusColorClass = (status: number) => {
+  switch (status) {
+    case -1:
+      return "status-unknown";
+    case 0:
+      return "status-uploaded";
+    case 1:
+      return "status-importing";
+    case 2:
+      return "status-success";
+    case 3:
+      return "status-partial";
+    case 4:
+      return "status-failed";
+    default:
+      return "status-unknown";
+  }
+};
+
+// const getStatusText = (status: number) => {
+//   switch (status) {
+//     case -1: return '未知';
+//     case 0: return '已上传';
+//     case 1: return '导入中';
+//     case 2: return '导入成功';
+//     case 3: return '部分成功';
+//     case 4: return '导入失败';
+//     default: return '未知';
+//   }
+// }
 </script>
 
 <template>
@@ -113,8 +187,19 @@ const downloadExampleQuestionLibFile = () => {
             <i class="i-mdi:download"></i>
             下载示例题库
           </button>
-          <a-modal class="question-lib-import" v-model:open="data.isShowImportModel" title="导入题库" @ok="onClickImportQuestionLib">
-            <a-upload-dragger v-model:fileList="data.uploadFiles" name="importFile" accept=".pb" :multiple="false" :beforeUpload="beforeUpload">
+          <a-modal
+            class="question-lib-import"
+            v-model:open="data.isShowImportModel"
+            title="导入题库"
+            @ok="onClickImportQuestionLib"
+          >
+            <a-upload-dragger
+              v-model:fileList="data.uploadFiles"
+              name="importFile"
+              accept=".pb"
+              :multiple="false"
+              :beforeUpload="beforeUpload"
+            >
               <div class="upload-drag-icon">
                 <i class="i-mdi:inbox"></i>
               </div>
@@ -125,7 +210,11 @@ const downloadExampleQuestionLibFile = () => {
         </div>
         <div class="question-lib-operations-search">
           <a-form @submit="submitSearch">
-            <a-input v-model:value="data.searchValue" placeholder="请输入关键字..." class="search-input">
+            <a-input
+              v-model:value="data.searchValue"
+              placeholder="请输入关键字..."
+              class="search-input"
+            >
               <template #prefix>
                 <i class="i-mdi:search"></i>
               </template>
@@ -134,31 +223,42 @@ const downloadExampleQuestionLibFile = () => {
         </div>
       </div>
       <div class="question-lib-list" v-if="data.questions.length > 0">
-        <div class="question-lib-item" v-for="(item, index) in data.questions" :key="index">
+        <div
+          class="question-lib-item"
+          :class="[getStatusColorClass(item.taskStatus)]"
+          v-for="(item, index) in data.questions"
+          :key="index"
+        >
+          <!--          <div class="question-lib-status">-->
+          <!--            <span :class="[-->
+          <!--              'status-dot',-->
+          <!--              getStatusColorClass(getQuestionCategoryImportStatus(item.taskId) ?? -1)-->
+          <!--            ]"></span>-->
+          <!--          </div>-->
           <div class="question-lib-header">
             <h3 class="question-lib-header-header-title">{{ item.name }}</h3>
             <div class="question-lib-header-header-action">
-            <a-dropdown>
+              <a-dropdown>
                 <div class="i-mdi:more-horiz"></div>
-              <template #overlay>
-                <a-menu>
-                  <a-menu-item v-if="false">
-                    <span>编辑题库</span>
-                  </a-menu-item>
-                  <a-menu-item @click="onClickDeriveQuestionLib(item.id)">
-                    <span>导出题库</span>
-                  </a-menu-item>
-                  <a-menu-item v-if="false">
-                    <span>分享题库</span>
-                  </a-menu-item>
-                  <a-menu-divider v-if="false" />
-                  <a-menu-item v-if="false">
-                    <span style="color: red;">删除题库</span>
-                  </a-menu-item>
-                </a-menu>
-              </template>
-            </a-dropdown>
-          </div>
+                <template #overlay>
+                  <a-menu>
+                    <a-menu-item v-if="false">
+                      <span>编辑题库</span>
+                    </a-menu-item>
+                    <a-menu-item @click="onClickDeriveQuestionLib(item.id)">
+                      <span>导出题库</span>
+                    </a-menu-item>
+                    <a-menu-item v-if="false">
+                      <span>分享题库</span>
+                    </a-menu-item>
+                    <a-menu-divider v-if="false" />
+                    <a-menu-item v-if="false">
+                      <span style="color: red">删除题库</span>
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
+            </div>
           </div>
           <p class="question-lib-signature">
             {{ item.signature }}
@@ -174,7 +274,7 @@ const downloadExampleQuestionLibFile = () => {
             </div>
             <div class="question-lib-info-item">
               <i class="i-mdi:lock"></i>
-              <span>{{ item.views === 0 ? '私有' : '公开'}}</span>
+              <span>{{ item.views === 0 ? "私有" : "公开" }}</span>
             </div>
           </div>
           <div class="question-lib-footer">
@@ -186,7 +286,7 @@ const downloadExampleQuestionLibFile = () => {
           </div>
         </div>
       </div>
-      <a-empty v-else/>
+      <a-empty v-else />
     </div>
   </div>
 </template>

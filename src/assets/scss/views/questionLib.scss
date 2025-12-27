@@ -1,5 +1,6 @@
 @use "../base";
 @use "sass:color";
+@use "sass:map";
 
 .question-lib-container {
   margin: 0 10px;
@@ -100,8 +101,16 @@
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         transition: all 0.3s linear;
+        //position: relative;
+        border-left-width: 5px;
+        border-left-style: solid;
         &:hover {
           transform: translateY(-5px);
+        }
+        @each $status, $color in base.$status-colors {
+          &.status-#{$status} {
+            border-left-color: $color;
+          }
         }
         .question-lib-header {
           display: flex;

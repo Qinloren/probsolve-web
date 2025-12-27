@@ -1,3 +1,5 @@
+@use "sass:map";
+
 $theme-color: #003eff;
 $theme-color-light: rgba(0, 54, 251, 0.51);
 $text-color: #4B5563;
@@ -9,6 +11,19 @@ $card-color: #F3F4F6;
 $logout-color: #E40606;
 $success-color: #4da11d;
 $error-color: #E40606;
+$status-colors: (
+  unknown: #BFBFBF,
+  uploaded: #1677FF,
+  importing: #69B1FF,
+  success: #52C41A,
+  partial: #FA8C16,
+  failed: #FF4D4F
+);
+//$status-uploaded-color: ;
+//$status--color: #;
+//$status-imported-success-color: #;
+//$status-imported-partial-color: #;
+//$status-imported-failed-color: #;
 
 .slide-enter-active,
 .slide-leave-active {

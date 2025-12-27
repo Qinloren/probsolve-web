@@ -100,6 +100,16 @@ export interface QuestionLibType {
   signature: string;
 
   /**
+   * 任务id
+   */
+  taskId: string;
+
+  /**
+   * 任务状态
+   */
+  taskStatus: number;
+
+  /**
    * 用户id
    */
   userId: number;

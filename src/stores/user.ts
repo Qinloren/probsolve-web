@@ -8,6 +8,7 @@ export const useUserStore = defineStore('user', () => {
   const userInfo = ref<UserType>()
   const logined = ref<boolean>()
 
+
   const setToken = (token: string) => {
     userToken.value = token
   }
