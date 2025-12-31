@@ -1,6 +1,6 @@
 import { fileURLToPath, URL } from 'node:url'
 
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import vueDevTools from "vite-plugin-vue-devtools";
@@ -9,7 +9,9 @@ import UnoCSS from "unocss/vite";
 import viteCompression from "vite-plugin-compression";
 
 // https://vite.dev/config/
-export default defineConfig(() => {
+export default defineConfig((mode) => {
+  const root = process.cwd();
+  const viteEnv = loadEnv(mode, root)
   return {
     plugins: [
       vue(),
@@ -66,8 +68,9 @@ export default defineConfig(() => {
       // hotOnly: true,
       proxy: {
         '/api': {
-          // target: 'https://q.serv.zeeyeh.com',
-          target: 'http://localhost:32223',
+          // target: `${viteEnv.VITE_SERVER_SSL === 'true' ? 'https' : 'http'}://${viteEnv.VITE_SERVER_URI}`,
+          target: 'https://q.serv.zeeyeh.com',
+          // target: 'http://localhost:32223',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },

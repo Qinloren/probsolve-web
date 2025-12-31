@@ -1,6 +1,6 @@
 {
   "name": "probsolve",
-  "version": "0.0.0",
+  "version": "1.2.1",
   "private": true,
   "type": "module",
   "engines": {
@@ -8,10 +8,8 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
+    "build": "vite build",
     "preview": "vite preview",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --build",
     "lint": "eslint . --fix --cache",
     "format": "prettier --write src/"
   },

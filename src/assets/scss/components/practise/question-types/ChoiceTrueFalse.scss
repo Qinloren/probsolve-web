@@ -21,7 +21,8 @@
         border-radius: 4px;
         transition: all 0.3s linear;
         &:hover {
-          border-color: color.adjust(base.$border-color, $lightness: -15px);
+          //border-color: color.adjust(base.$border-color, $lightness: -15px);
+          border-color: color.adjust(base.$border-color, $lightness: -15%);
         }
       }
     }

@@ -73,7 +73,8 @@
                 &:hover,
                 &.active {
                   color: base.$text-color-dark;
-                  background: color.adjust(base.$card-color, $lightness: -5px) ;
+                  //background: color.adjust(base.$card-color, $lightness: -5px) ;
+                  background: color.adjust(base.$card-color, $lightness: -5%) ;
                 }
               }
             }
