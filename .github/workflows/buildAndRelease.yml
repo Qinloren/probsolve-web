@@ -50,7 +50,7 @@ jobs:
       - name: Save Docker Image
         run: |
            docker save qinloren/probsolve-web:${{ steps.version.outputs.version }} \
-             -o probsolve-web-${{ steps.version.outputs.version }}.tar
+             -o probsolve-web-${{ steps.version.outputs.version }}-images.tar
 
       - name: Create Github Release
         uses: softprops/action-gh-release@v2
