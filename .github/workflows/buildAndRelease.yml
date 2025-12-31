@@ -40,7 +40,7 @@ jobs:
         run: |
           cd dist
           zip -r ../probsolve-web-${{ steps.version.outputs.version }}.zip .
-          tar -czvf ../probsolve-web-${{ steps.version.outputs.version }}.tar.gz
+          tar -czvf ../probsolve-web-${{ steps.version.outputs.version }}.tar.gz .
           cd ..
 
       - name: Build Docker Image
