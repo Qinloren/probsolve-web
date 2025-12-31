@@ -42,26 +42,45 @@ const initQuestions = async () => {
 const processTaskStatus = async () => {
   const arr = [] as Array<string>;
   for (let i = 0; i < data.questions.length; i++) {
-    arr.push(data.questions[i].taskId);
+    const question = data.questions[i];
+    if (question && question.taskId) {
+      arr.push(question.taskId);
+    }
   }
   const response = await questionLibStatusList(arr);
   const statusArr = response.data.data;
-// 遍历所有题库，为每个题库设置对应的状态
-  for (let i = 0; i < data.questions.length; i++) {
-    const question = data.questions[i];
-    // 在 statusArr 中查找与当前题库 taskId 匹配的状态信息
-    const statusInfo = statusArr.find((statusItem: { status: number; taskId: string }) =>
-      statusItem.taskId === question.taskId
-    );
-
-    // 如果找到了匹配的状态信息，则更新 taskStatus
-    if (statusInfo) {
-      question.taskStatus = statusInfo.status;
-    } else {
-      // 如果没有找到对应的状态信息，设置为默认值 -1（未知状态）
-      question.taskStatus = -1;
+  const statusMap = new Map<string, number>();
+  if (Array.isArray(statusMap)) {
+    for (const statusItem of statusArr) {
+      if (statusItem && statusItem.taskId && statusItem.status !== undefined) {
+        statusMap.set(statusItem.taskId, statusItem.status);
+      }
     }
   }
+  for (let i = 0; i < data.questions.length; i++) {
+    const question = data.questions[i];
+    if (question && question.taskId) {
+      const status = statusMap.get(question.taskId);
+      question.taskStatus = status !== undefined ? status : -1;
+    }
+  }
+// // 遍历所有题库，为每个题库设置对应的状态
+//   for (let i = 0; i < data.questions.length; i++) {
+//     const question = data.questions[i];
+//     if (!question || !question.taskId) continue;
+//     // 在 statusArr 中查找与当前题库 taskId 匹配的状态信息
+//     const statusInfo = statusArr.find((statusItem: { status: number; taskId: string }) =>
+//       statusItem.taskId === question.taskId
+//     );
+//
+//     // 如果找到了匹配的状态信息，则更新 taskStatus
+//     if (statusInfo) {
+//       question.taskStatus = statusInfo.status;
+//     } else {
+//       // 如果没有找到对应的状态信息，设置为默认值 -1（未知状态）
+//       question.taskStatus = -1;
+//     }
+//   }
 };
 
 const onClickDeriveQuestionLib = (id: number) => {
