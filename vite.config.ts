@@ -9,9 +9,10 @@ import UnoCSS from "unocss/vite";
 import viteCompression from "vite-plugin-compression";
 
 // https://vite.dev/config/
-export default defineConfig((mode) => {
-  const root = process.cwd();
-  const viteEnv = loadEnv(mode, root)
+// export default defineConfig((mode) => {
+export default defineConfig(() => {
+  // const root = process.cwd();
+  // const viteEnv = loadEnv(mode, root)
   return {
     plugins: [
       vue(),
