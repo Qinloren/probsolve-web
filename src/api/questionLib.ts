@@ -116,7 +116,7 @@ export const questionLibStatus = (taskId: string) => {
 export const questionLibStatusList = (ids: Array<string>) => {
   return http.get('/sys/attachment/upload/question/import/status', {
     params: {
-      ids: ids
+      ids: ids.join(',')
     }
   })
 }

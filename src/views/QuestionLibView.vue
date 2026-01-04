@@ -18,6 +18,8 @@ const data = reactive({
   isShowImportModel: false,
   uploadFiles: [] as UploadProps["fileList"],
   questions: [] as QuestionLibType[],
+  isShowDownloadTypeModel: false,
+  supportType: ["json", "txt"],
 });
 
 const submitSearch = async () => {
@@ -50,11 +52,9 @@ const processTaskStatus = async () => {
   const response = await questionLibStatusList(arr);
   const statusArr = response.data.data;
   const statusMap = new Map<string, number>();
-  if (Array.isArray(statusMap)) {
-    for (const statusItem of statusArr) {
-      if (statusItem && statusItem.taskId && statusItem.status !== undefined) {
-        statusMap.set(statusItem.taskId, statusItem.status);
-      }
+  for (const statusItem of statusArr) {
+    if (statusItem && statusItem.taskId && statusItem.status !== undefined) {
+      statusMap.set(statusItem.taskId, statusItem.status);
     }
   }
   for (let i = 0; i < data.questions.length; i++) {
@@ -64,23 +64,23 @@ const processTaskStatus = async () => {
       question.taskStatus = status !== undefined ? status : -1;
     }
   }
-// // 遍历所有题库，为每个题库设置对应的状态
-//   for (let i = 0; i < data.questions.length; i++) {
-//     const question = data.questions[i];
-//     if (!question || !question.taskId) continue;
-//     // 在 statusArr 中查找与当前题库 taskId 匹配的状态信息
-//     const statusInfo = statusArr.find((statusItem: { status: number; taskId: string }) =>
-//       statusItem.taskId === question.taskId
-//     );
-//
-//     // 如果找到了匹配的状态信息，则更新 taskStatus
-//     if (statusInfo) {
-//       question.taskStatus = statusInfo.status;
-//     } else {
-//       // 如果没有找到对应的状态信息，设置为默认值 -1（未知状态）
-//       question.taskStatus = -1;
-//     }
-//   }
+  // // 遍历所有题库，为每个题库设置对应的状态
+  //   for (let i = 0; i < data.questions.length; i++) {
+  //     const question = data.questions[i];
+  //     if (!question || !question.taskId) continue;
+  //     // 在 statusArr 中查找与当前题库 taskId 匹配的状态信息
+  //     const statusInfo = statusArr.find((statusItem: { status: number; taskId: string }) =>
+  //       statusItem.taskId === question.taskId
+  //     );
+  //
+  //     // 如果找到了匹配的状态信息，则更新 taskStatus
+  //     if (statusInfo) {
+  //       question.taskStatus = statusInfo.status;
+  //     } else {
+  //       // 如果没有找到对应的状态信息，设置为默认值 -1（未知状态）
+  //       question.taskStatus = -1;
+  //     }
+  //   }
 };
 
 const onClickDeriveQuestionLib = (id: number) => {
@@ -110,8 +110,14 @@ const beforeUpload: UploadProps["beforeUpload"] = (file) => {
 const onClickImportQuestionLib = async () => {
   if (data.uploadFiles) {
     const uploadFile = data.uploadFiles[0];
+    const filename = uploadFile.name;
+    if (!filename.includes(".")) {
+      message.warning("无法自动推断上传类型！");
+      return;
+    }
+    const ext = filename.substring(uploadFile.name.lastIndexOf(".") + 1);
     if (uploadFile && uploadFile.originFileObj) {
-      const response = await importQuestionLib(uploadFile.originFileObj, "pb");
+      const response = await importQuestionLib(uploadFile.originFileObj, ext);
       if (response.status !== 200) {
         message.error("系统异常，请联系管理员！");
         return;
@@ -135,23 +141,23 @@ const startPractise = (id: number) => {
   });
 };
 
-const downloadExampleQuestionLibFile = () => {
+const showDownloadModal = () => {
+  data.isShowDownloadTypeModel = true;
+};
+
+const selectDownloadType = (type: string) => {
+  if (!data.supportType.includes(type)) {
+    message.warning("不支持该类型！");
+    return;
+  }
   const a = document.createElement("a");
-  a.href = "/example/libs/default.pb";
-  a.download = "example.pb";
+  a.href = "/example/libs/default." + type;
+  a.download = "example." + type;
   a.style.display = "none";
   document.body.appendChild(a);
   a.click();
   a.remove();
 };
-
-// const getQuestionCategoryImportStatus = async (taskId: string) => {
-//   const response = await questionLibStatus(taskId);
-//   if (response.data.code !== 0) {
-//     return -1;
-//   }
-//   return response.data.data;
-// };
 
 const getStatusColorClass = (status: number) => {
   switch (status) {
@@ -202,10 +208,28 @@ const getStatusColorClass = (status: number) => {
             <i class="i-mdi:tray-upload"></i>
             导入题库
           </button>
-          <button class="question-lib-import-btn" @click="downloadExampleQuestionLibFile">
+          <button class="question-lib-import-btn" @click="showDownloadModal">
             <i class="i-mdi:download"></i>
             下载示例题库
           </button>
+          <a-modal
+            class="question-lib-download-type"
+            v-model:open="data.isShowDownloadTypeModel"
+            title="选择下载类型"
+            :footer="null"
+            @cancel="data.isShowDownloadTypeModel = false"
+          >
+            <div class="download-type-options">
+              <button class="download-type-btn" @click="selectDownloadType('json')">
+                <i class="i-mdi:code-json"></i>
+                <span>JSON 格式</span>
+              </button>
+              <button class="download-type-btn" @click="selectDownloadType('txt')">
+                <i class="i-mdi:file-document"></i>
+                <span>TXT 格式</span>
+              </button>
+            </div>
+          </a-modal>
           <a-modal
             class="question-lib-import"
             v-model:open="data.isShowImportModel"
@@ -215,7 +239,7 @@ const getStatusColorClass = (status: number) => {
             <a-upload-dragger
               v-model:fileList="data.uploadFiles"
               name="importFile"
-              accept=".pb"
+              accept=".json,.txt"
               :multiple="false"
               :beforeUpload="beforeUpload"
             >
@@ -312,4 +336,29 @@ const getStatusColorClass = (status: number) => {
 
 <style lang="scss">
 @use "@/assets/scss/views/questionLib";
+
+// 为下载类型选择按钮添加样式
+.download-type-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  .download-type-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 15px;
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+
+    &:hover {
+      border-color: #1890ff;
+      background-color: #e6f7ff;
+    }
+  }
+}
 </style>

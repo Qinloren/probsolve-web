@@ -70,8 +70,8 @@ export default defineConfig(() => {
       proxy: {
         '/api': {
           // target: `${viteEnv.VITE_SERVER_SSL === 'true' ? 'https' : 'http'}://${viteEnv.VITE_SERVER_URI}`,
-          target: 'https://q.serv.zeeyeh.com',
-          // target: 'http://localhost:32223',
+          // target: 'https://q.serv.zeeyeh.com',
+          target: 'http://localhost:32223',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ''),
         },

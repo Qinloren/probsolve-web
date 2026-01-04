@@ -1,0 +1,35 @@
+//===============header===============
+题库名: 默认题库
+简介: 这是系统内置默认题库
+//===============单选题===============
+题目：在 Java 中，用于定义一个类的关键字是？
+A. function
+B. class
+C. define
+D. object
+正确答案：B
+解析：Java 使用 class 关键字来定义类，是面向对象编程的基础。
+
+//===============多选题===============
+题目：以下哪些属于 HTTP 常见的请求方法？
+A. GET
+B. POST
+C. UPDATE
+D. DELETE
+正确答案：A、B、D
+解析：HTTP 常见请求方法包括 GET、POST、PUT、DELETE 等，其中 UPDATE 并不是标准方法。
+
+//===============判断题===============
+题目：在数据库中，主键可以为空。
+正确答案：错误
+解析：主键用于唯一标识一条记录，不能为空且不能重复。
+
+四、填空题
+题目：在 Spring Boot 中，用于标注主启动类的注解是（）。
+正确答案：@SpringBootApplication
+解析：@SpringBootApplication 是 Spring Boot 项目的入口注解。
+
+五、简答题
+题目：简要说明什么是 RESTful 风格的 API。
+正确答案：RESTful API 是一种基于 HTTP 协议的接口设计风格，通过 URL 表示资源，使用 HTTP 方法（GET、POST、PUT、DELETE）表示对资源的操作。
+解析：REST 强调资源定位、无状态通信和统一接口。
